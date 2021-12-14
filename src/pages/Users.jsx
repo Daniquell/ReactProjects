@@ -12,7 +12,7 @@ const Users=() => {
 
 
 const fetchUsers=async()=>{
-  const users=await axios.get('https://jsonplaceholder.typicode.com/users');
+  const users=await axios.get('https://localhost:5050/Users');
   setUsers(users.data)
   setLoading(false)
 }
@@ -82,11 +82,7 @@ const [showModal,setShowModal]=useState(false)
     <div className="container">
 
     
-    
   
-  
-
-<button onClick={()=>fetchUsers()}>fetchUsers</button>
 
 
       <MyModal visible={showModal} setVisible={setShowModal}>{

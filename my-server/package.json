@@ -1,0 +1,19 @@
+{
+  "name": "my-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "date-format": "^3.0.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.15"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,8 +1,17 @@
-import React from "react";
+import React,{useContext} from "react";
 import { Link } from 'react-router-dom';
+import AuthContext from '../context'
 
 
 const NavBar=() => {
+  
+  const {setIsAuth}=useContext(AuthContext);
+  const logout=()=>{
+    localStorage.clear();
+    setIsAuth(false)
+
+    
+  }
   return (
     <nav>
     <div class="nav-wrapper">
@@ -13,6 +22,7 @@ const NavBar=() => {
         <li><a href="#">Components</a></li>
         <li><a href="#">JavaScript</a></li>
         <li><Link to="/posts">Posts</Link></li>
+        <a onClick={()=>setIsAuth(false)} class="waves-effect waves-light btn"><i class="material-icons left">airplanemode_active</i>button</a>
       </ul>
     </div>
   </nav>

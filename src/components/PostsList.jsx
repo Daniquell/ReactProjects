@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import SvgButton from "../components/jager"
 
 const PostsList = (props) => {
     const [filter, setFilter] = useState(props.children);
@@ -14,7 +15,7 @@ const PostsList = (props) => {
       return props.children;
     };
     const postSearch = getSearch();
-  
+
     const onChange = (e) => {
       setFilter(
         props.children.filter((post) =>
@@ -22,6 +23,8 @@ const PostsList = (props) => {
         )
       );
     };
+
+    
   
     return (
       <>
@@ -41,7 +44,7 @@ const PostsList = (props) => {
             <h5>Title</h5>
             <div>Body</div>
             <div>Delete</div>
-            <button>AddInModalWindow</button>
+            <SvgButton></SvgButton>
           
                 
         

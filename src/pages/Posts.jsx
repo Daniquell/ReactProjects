@@ -1,143 +1,123 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PostsList from "../components/PostsList";
-import MyModal from "../components/MyButton/MyModal/MyModal";
-import axios from 'axios';
-import Loader from 'react-loader-spinner'
+import ReactPaginate from 'react-paginate';
+
+import axios from "axios";
+import Loader from "react-loader-spinner";
 
 
-const Posts=()=>{
-
-  const[loading, setLoading]=useState(true);
-
-  
-  
-
-const fetchPosts=async()=>{
-    const posts=await axios.get('https://jsonplaceholder.typicode.com/posts');
-    setPosts(posts.data)
-    setLoading(false)
+export const light = {
+  bgColor: '#fff',
+  textColor: '#000'
 }
-useEffect(() => {
+
+export const dark = {
+  bgColor: '#000',
+  textColor: '#fff'
+}
+
+const Posts = () => {
+  const delay = 1000;
+  const trigger = useRef(null);
+  const observer = useRef(null);
+  const[loadData,setLoadData]=useState(false);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [posts, setPosts] = useState([]);
+  const [post, setPost] = useState({
+    userId: "",
+    id: "",
+    title: "",
+    body: "",
+  });
+  const limit = 10;
+  const pageCount = 100/limit;
+
+  const fetchPosts = async () => {
+    const postsFetched = await axios.get("https://jsonplaceholder.typicode.com/posts",{
+      params:{
+        _limit: 10,
+        _page: page
+      }
+    });
+    setPosts([...posts,...postsFetched.data]);
+    setLoading(false);
+  };
+  useEffect(() => {
+
     fetchPosts();
-   
-  },[]);
+  }, [page]);
 
+  useEffect(() => {
+    if(loadData) return;
+    if(observer.current) observer.current.disconnect();
+    const callback = function(entries, observer) {
+        if(entries[0].isIntersecting){
+          setPage(page+1)
+        }
+    };
+    observer.current = new IntersectionObserver(callback);
+    observer.current.observe(trigger.current);
+  }, [])
 
-
-  const [posts, setPosts]=useState(null);
-  const [post, setPost]=useState(
-    {
-      title:'',
-      body:'',
-    }
-    );
-
-
-  const onChange=(e)=>{
-    if (e.target.id=="title"){
-      setPost({...post, title: e.target.value});
-    }
-    else{
-      setPost({...post, body: e.target.value});
-    }
-    
+  const removePost = (id) => {
+    const confirm = window.confirm("Реально удалить?")
+    if (confirm == true) setPosts(posts.filter((post) => post.id !== id)) //для проверки на удаление
   };
 
-  const addPost=()=>{
-    const id=Math.random()*1
-    setPost({...post,id:id})
-    setPosts([...posts,post]);
-    setPost({
-      title:'',
-      body:'',
-    })
-  }
+  const pageChange = (page)=>{
+      console.log(page);
+      setPage(page.selected+1)
 
-  const removePost=(id)=>{
-    const confirm=window.confirm("Реально удалить?");
-    if (confirm) setPosts(posts.filter((post)=>post.id!==id))
-    
-  };
+    }
 
+  const [showModal, setshowModal] = useState(false);
+    const [showPostModal, setshowPostModal] = useState(false);
 
-
-  const clear=()=>{
-    setPost({title:'',body:''})
-  }
-
-console.log(posts);
-
-const [showModal,setShowModal]=useState(false)
-
-
-  
-
-return(
-  <div className="App">
-    <div className="container">
-        <button onClick={()=>fetchPosts()}>fetchPosts</button>
-  
-
-<MyModal visible={showModal} setVisible={setShowModal}>{
+  return (
     <>
-        <div className="input-field col s6">
-          <i className="material-icons prefix"></i>
-          <input id="title" type="text" class="validate" value={post.title} placeholder="EnterTitle"
-           onChange={onChange}/>
-         
-        </div>
-        <div className="input-field col s6">
-          <i className="material-icons prefix"></i>
-          <input id="body" type="tel" class="validate" value={post.body} placeholder="EnterBody" onChange={onChange}/>
-        </div>
-          
-        
-      
+      <div className="App">
+        <div className="container">
+          <h3>Posts</h3>
 
 
-           <a id="Add" className="waves-effect waves-light btn m-1"
-            onClick={()=>addPost()}
-            >
-            Add</a>
-            <a className="waves-effect waves-light right btn m-1"
-            onClick={()=>clear()}
-          >Cancel</a>
-        
-        </>} 
-           </MyModal>  
+          <div className="row m-1">
+            <div className="col s4">
+              <a className="waves-effect waves-light btn" onClick={() => setshowPostModal(true)}>
+                New post
+              </a>
+            </div>
+            <div className="col s8">
 
-            <div className="row m-1">
-      <div className="col s4">
-        <a className="waves-effect waves-light btn"
-        onClick={()=>setShowModal(true)}
-        >
-          Add post
-        </a>
+            </div>
+          </div>
+          {loading ? (
+            <Loader
+              className="loader-center"
+              type="BeatLoader "
+              color="#ee6e73"
+              height={100}
+              width={100}
+              timeout={delay} //3 secs
+            />
+          ) : (
+            <PostsList search deletePost={removePost}>
+              {posts}
+            </PostsList>
+          )}
+          <div ref={trigger} className="red accent-4">I'm a trigger</div>
+      <ReactPaginate className="pagination selected"
+   breakLabel="..."
+   nextLabel=">"
+   onPageChange={pageChange}
+   pageRangeDisplayed={5}
+   pageCount={10}
+   onChange={pageChange}
+   previousLabel="< previous"
+ />
+          </div>
       </div>
-      <div className="col s8">
-        <a className="waves-effect waves-light btn"
-      onClick={()=>setShowModal(true)}
-        >
-          Open post
-        </a>        
-      </div>
-    </div>
-    {loading? (
-    <Loader
-      className="center"
-      type="Puff"
-      color="#00BFFF"
-      height={100}
-      width={100}
-      />
-    ):
-    (<PostsList search deletePost={removePost}>
-      {posts}
-    </PostsList>
-    )}
-  </div> </div>
-          );
-
+    </>
+  );
 };
-
 export default Posts;

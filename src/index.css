@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color:aqua;
 }
 
 code {
@@ -32,4 +33,12 @@ code {
   z-index:1002;
   display:block;
   opacity:0.5;
+}
+
+.material-icons{
+  cursor:pointer;
+}
+
+.container{
+  color:aquamarine;
 }
