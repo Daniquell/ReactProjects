@@ -13,7 +13,6 @@
 //         'Content-Type':'application/json'
 //     })
 //     res.end(JSON.stringify({id:1, name:'Andrusha'}))
-    
 // }).listen(PORT, process.env.HOST,()=>{
 //     console.log(`Сервер начал прослушивание на порту ${PORT}`);
 // });         
@@ -23,16 +22,27 @@
 
 
 const express=require('express')
+const bodyParser=require('body-parser')
 const app=express()
 const dotenv=require("dotenv");
 dotenv.config();
 const PORT=process.env.PORT
+let users=[{name:"andrusha",id:1},{name:'jehrfguih',id:2},{name:"uerhfgfeuiy",id:3}]
+app.use( (req, res, next)=> {
+    bodyParser.json()
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type', 'application/json');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 app.get('/users',(req,res)=>{
-    res.send({name:"andrusha",id:1})
+    res.send(users)
 })
-app.get('/posts',(req,res)=>{
-    res.send('POSTS')
+app.post('/users',(req,res)=>{
+    console.log(req.body)
+    res.send(users)
 })
 app.listen(PORT,()=>{
     console.log(`Example app listening at http://localhost:${PORT}`)

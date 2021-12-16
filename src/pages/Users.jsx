@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import UserList from "../components/UserList";
 import MyModal from "../components/MyButton/MyModal/MyModal";
 import axios from 'axios';
+import http from "../http";
 import Loader from 'react-loader-spinner'
 
 const Users=() => {
@@ -12,7 +13,7 @@ const Users=() => {
 
 
 const fetchUsers=async()=>{
-  const users=await axios.get('https://localhost:5050/Users');
+  const users=await http.get('/users');
   setUsers(users.data)
   setLoading(false)
 }
@@ -49,9 +50,10 @@ const fetchUsers=async()=>{
     
   };
 
-  const addUser=()=>{
+  const addUser=async()=>{
     const id=Math.random()*1
     setUser({...user,id:id})
+    const us=await http.post("/users",{name:"dwa",id:5});
     setUsers([...users,user]);
     setUser({
       name:'',
